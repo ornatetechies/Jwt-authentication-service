@@ -68,6 +68,7 @@ import java.util.Optional;
                 .claim("role", authentication.getAuthorities().toString())
                 .claim("firstName", userEntity.getFirstName())
                 .claim("lastName", userEntity.getLastName())
+                .claim("userId", userEntity.getId())
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
