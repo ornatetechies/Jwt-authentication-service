@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service public class ServiceImpl {
 
@@ -65,9 +67,12 @@ import java.util.Optional;
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiryDuration))
                 .subject(authentication.getName())
-                .claim("role", authentication.getAuthorities().toString())
+                .claim("role", authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toSet()))
                 .claim("firstName", userEntity.getFirstName())
                 .claim("lastName", userEntity.getLastName())
+                .claim("userId", userEntity.getId())
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
