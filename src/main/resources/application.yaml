@@ -18,8 +18,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://eureka-server:8761/eureka
-  instance:
-    hostname: Authorization-Server
+    instance:
+      preferIpAddress: true
 keyStore:
   path: keystore.jks
   password: password
